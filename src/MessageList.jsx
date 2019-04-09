@@ -1,9 +1,7 @@
 import React, {Component} from 'react';
 import Message from './Message.jsx';
 
-
 class MessageList extends Component {
-
 
   render() {
 
@@ -18,7 +16,6 @@ class MessageList extends Component {
     return (
         <React.Fragment>
             {messageArray}
-            <div className="message system"> Anonymous1 changed their name to nomnom.</div>
         </React.Fragment>
     );
   }

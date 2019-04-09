@@ -3,12 +3,10 @@ import NavBar from './NavBar.jsx';
 import MessageList from './MessageList.jsx';
 import ChatBar from './ChatBar.jsx';
 
-
 class App extends Component {
 
   constructor(props) {
     super(props);
-    this.handleKeyDown = this.handleKeyDown.bind(this);
     this.state = {messages: [
       {
         id: 1,
@@ -20,6 +18,7 @@ class App extends Component {
         id: 2,
         type: "incomingNotification",
         content: "Anonymous1 changed their name to nomnom",
+        username: 'Admin'
       },
       {
         id: 3,
@@ -49,29 +48,23 @@ class App extends Component {
         id: 7,
         type: "incomingNotification",
         content: "Anonymous2 changed their name to NotFunny",
+        username: 'Admin'
       }
-    ] , user: ''};
+    ], user: ''};
   }
 
-  handleKeyDown(e){
+  handleKeyDown = (e) => {
     if(e.key === 'Enter'){
-      const newMessage = {id: 10, username: 'Ronan', content: e.target.value}
-      const messages = this.state.messages.concat(newMessage)
-      this.setState({messages: messages});
+      const random = Math.floor(Math.random() * 100000)
+      const newMessage = {id: random, username: this.state.user, content: e.target.value}
+      this.setState({messages: this.state.messages.concat(newMessage)});
+      e.target.value = '';
     }
   }
 
-  componentDidMount() {
-    console.log("componentDidMount <App />");
-    setTimeout(() => {
-      console.log("Simulating incoming message");
-      // Add a new message to the list of messages in the data store
-      const newMessage = {id: 3, username: "Michelle", content: "Hello there!"};
-      const messages = this.state.messages.concat(newMessage)
-      // Update the state of the app component.
-      // Calling setState will trigger a call to render() in App and all child components.
-      this.setState({messages: messages})
-    }, 3000);
+  newUsername = (e) => {
+      this.setState({user: e.target.value});
+      console.log(e.target.value);
   }
 
   render() {
@@ -79,7 +72,7 @@ class App extends Component {
       <div>
         <NavBar />
         <MessageList allMessages={this.state.messages} />
-        <ChatBar onKeyPress={(e) => this.handleKeyDown(e)} username={this.state.user} />
+        <ChatBar onKeyPress={(e) => this.handleKeyDown(e)} newUser={(e) => this.newUsername(e)} username={this.state.user} />
       </div>
     );
   }
