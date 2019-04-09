@@ -1,9 +1,7 @@
 @import url("https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700");
 @import url("https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css");
 
-h1 {
-  color: tomato;
-}
+
 
 body {
   background: white;
@@ -14,7 +12,7 @@ body {
 }
 
 .chatbar {
-  background: tomato;
+  background: darkblue;
   border-top: 1px solid black;
   bottom: 0;
   display: flex;
@@ -69,7 +67,7 @@ body {
 }
 
 .navbar {
-  background: tomato;
+  background: darkblue;
   border-bottom: 1px solid black;
   height: 60px;
   left: 0;
@@ -80,7 +78,7 @@ body {
 }
 
 .navbar-brand {
-  color: inherit;
+  color: white;
   display: block;
   float: left;
   font-weight: 700;
