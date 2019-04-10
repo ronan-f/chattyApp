@@ -30,7 +30,7 @@ class App extends Component {
   }
 
   newUsername = (e) => {
-    if(e.key === 'Enter') {
+    if(e.key === 'Enter' && e.target.value !== this.state.user && e.target.value.trim()) {
       this.setState({user: e.target.value});
       const adminMessage = {username: '', content: `${this.state.user} changed their name to ${e.target.value}`, type: 'incoming-notification', color: this.state.color}
       this.socket.send(JSON.stringify(adminMessage));
