@@ -2,10 +2,11 @@ import React, {Component} from 'react';
 
 class Message extends Component {
   render() {
+    const messageClass = this.props.type === 'incomingMessage' ? 'message-content' : 'notification-content'
     return (
       <div className="message">
         <span className="message-username">{this.props.username}</span>
-        <span className="message-content">{this.props.content}</span>
+        <span className={messageClass}>{this.props.content}</span>
       </div>
     );
   }

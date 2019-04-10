@@ -7,11 +7,11 @@ class App extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {messages: [], user: ''};
+    this.state = {type: 'postMessage', messages: [], user: 'Anonymous'};
   }
 
   componentDidMount() {
-    this.socket = new WebSocket("ws://localhost:3001");
+    this.socket = new WebSocket("ws://192.168.88.231:3001");
     this.socket.onopen = () => {
       console.log('Connected to sockets');
     }
@@ -22,16 +22,20 @@ class App extends Component {
   }
 
   addMessage = (e) => {
-    const user = this.state.user ? this.state.user : 'Anonymous';
+    const user = this.state.user;
     if(e.key === 'Enter'){
-      const newMessage = {username: user, content: e.target.value}
+      const newMessage = {username: user, content: e.target.value, type: 'incomingMessage'}
       this.socket.send(JSON.stringify(newMessage));
       e.target.value = '';
     }
   }
 
   newUsername = (e) => {
+    if(e.key === 'Enter') {
       this.setState({user: e.target.value});
+      const adminMessage = {username: 'ADMIN', content: `${this.state.user} changed their name to ${e.target.value}`, type: 'incoming-notification'}
+      this.socket.send(JSON.stringify(adminMessage));
+    }
   }
 
   render() {
