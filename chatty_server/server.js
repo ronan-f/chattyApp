@@ -24,10 +24,16 @@ wss.broadcast = function broadcast(data) {
 // the ws parameter in the callback.
 wss.on('connection', (ws) => {
   console.log('Client connected');
-  wss.broadcast(JSON.stringify({id: uuidv1(), username: 'ADMIN', content: 'A new user has joined', type: 'incoming-notification', numberOfUsers: wss.clients.size}))
+
+  wss.broadcast(JSON.stringify({id: uuidv1(), content: 'A new user has joined', type: 'incoming-notification', numberOfUsers: wss.clients.size}))
   ws.on('message', function incoming(message) {
     const parsedMessage = JSON.parse(message);
+    let color = parsedMessage.color;
+    let assignColor = color ? color = color : color = '#'+(Math.random()*0xFFFFFF<<0).toString(16);
+
     parsedMessage.id = uuidv1();
+    parsedMessage.color = assignColor;
+    parsedMessage.numberOfUsers = wss.clients.size;
     wss.broadcast(JSON.stringify(parsedMessage));
   });
 
@@ -35,6 +41,6 @@ wss.on('connection', (ws) => {
   // Set up a callback for when a client closes the socket. This usually means they closed their browser.
   ws.on('close', () => {
     console.log('Client disconnected');
-    wss.broadcast(JSON.stringify({id: uuidv1(), username: 'ADMIN', content: 'A user has disconnected', type: 'incoming-notification', numberOfUsers: wss.clients.size}))
+    wss.broadcast(JSON.stringify({id: uuidv1(), content: 'User disconnected', type: 'incoming-notification', numberOfUsers: wss.clients.size}))
   });
 });

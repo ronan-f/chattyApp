@@ -7,7 +7,7 @@ class App extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {type: 'postMessage', messages: [], user: 'Anonymous', numberOfUsers: 0};
+    this.state = {color: '', type: 'postMessage', messages: [], user: 'Anonymous', numberOfUsers: 0};
   }
 
   componentDidMount() {
@@ -17,14 +17,13 @@ class App extends Component {
     }
     this.socket.onmessage = (event) => {
       const parsedMessageObj = JSON.parse(event.data);
-      this.setState({messages: this.state.messages.concat(parsedMessageObj), numberOfUsers: parsedMessageObj.numberOfUsers});
+      this.setState({messages: this.state.messages.concat(parsedMessageObj), numberOfUsers: parsedMessageObj.numberOfUsers, color: parsedMessageObj.color});
     }
   }
 
   addMessage = (e) => {
-    const user = this.state.user;
     if(e.key === 'Enter'){
-      const newMessage = {username: user, content: e.target.value, type: 'incomingMessage'}
+      const newMessage = {username: this.state.user, content: e.target.value, type: 'incomingMessage', color: this.state.color}
       this.socket.send(JSON.stringify(newMessage));
       e.target.value = '';
     }
@@ -33,13 +32,12 @@ class App extends Component {
   newUsername = (e) => {
     if(e.key === 'Enter') {
       this.setState({user: e.target.value});
-      const adminMessage = {username: 'ADMIN', content: `${this.state.user} changed their name to ${e.target.value}`, type: 'incoming-notification'}
+      const adminMessage = {username: '', content: `${this.state.user} changed their name to ${e.target.value}`, type: 'incoming-notification', color: this.state.color}
       this.socket.send(JSON.stringify(adminMessage));
     }
   }
 
   render() {
-    console.log(this.state);
     return (
       <div>
         <NavBar numOfUsers={this.state.numberOfUsers} />
