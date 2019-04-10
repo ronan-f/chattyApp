@@ -7,7 +7,7 @@ class App extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {type: 'postMessage', messages: [], user: 'Anonymous'};
+    this.state = {type: 'postMessage', messages: [], user: 'Anonymous', numberOfUsers: 0};
   }
 
   componentDidMount() {
@@ -17,7 +17,7 @@ class App extends Component {
     }
     this.socket.onmessage = (event) => {
       const parsedMessageObj = JSON.parse(event.data);
-      this.setState({messages: this.state.messages.concat(parsedMessageObj)});
+      this.setState({messages: this.state.messages.concat(parsedMessageObj), numberOfUsers: parsedMessageObj.numberOfUsers});
     }
   }
 
@@ -39,9 +39,10 @@ class App extends Component {
   }
 
   render() {
+    console.log(this.state);
     return (
       <div>
-        <NavBar />
+        <NavBar numOfUsers={this.state.numberOfUsers} />
         <MessageList allMessages={this.state.messages} />
         <ChatBar onKeyPress={(e) => this.addMessage(e)} newUser={(e) => this.newUsername(e)} username={this.state.user} />
       </div>
