@@ -2,11 +2,14 @@ import React, { Component } from "react";
 
 class Message extends Component {
   render() {
-    console.log('type', this.props.type);
     let tagName;
 
     if(this.props.type === 'image'){
-      tagName = <img className='incoming-image' src={this.props.content} />
+      tagName =
+      <div>
+        <span className='message-content'>{this.props.content} </span>
+        <img className='incoming-image' src={this.props.imageUrl} />
+      </div>
     } else if(this.props.type === 'incomingMessage'){
       tagName = <span className='message-content'>{this.props.content}</span>
     } else {

@@ -12,6 +12,7 @@ class MessageList extends Component {
           content={message.content}
           type={message.type}
           color={message.color}
+          imageUrl={message.url}
         />
       );
     });

@@ -44,8 +44,20 @@ class App extends Component {
       color: this.state.currentUser.color
     };
 
-    if(imgTest.test(value)) {
-      console.log('URL CONTAINS IMAGE');
+    if(imgTest.test(value) && e.key === 'Enter') {
+      const inputAsArray = value.split(' ');
+      let url = '';
+      const restOfMessageArray = [];
+      for(let word of inputAsArray) {
+        if (imgTest.test(word)){
+          url = word;
+        } else {
+          restOfMessageArray.push(word);
+        }
+      }
+      const restOfMessageJoined = restOfMessageArray.join(' ');
+      newMessage.content = restOfMessageJoined;
+      newMessage.url = url;
       newMessage.type = 'image';
       this.socket.send(JSON.stringify(newMessage));
       e.target.value = "";
