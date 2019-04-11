@@ -24,7 +24,7 @@ class App extends Component {
     this.socket.onmessage = event => {
       const parsedMessageObj = JSON.parse(event.data);
       if (parsedMessageObj.type === 'connection') {
-        this.setState({currentUser: {id: parsedMessageObj.id, color: parsedMessageObj.color }});
+        this.setState({currentUser: {id: null, color: parsedMessageObj.color }});
       } else {
         this.setState({
           messages: this.state.messages.concat(parsedMessageObj),
@@ -35,26 +35,36 @@ class App extends Component {
   }
 
   addMessage = e => {
-    if (e.key === "Enter" && e.target.value.trim()) {
-      const newMessage = {
-        username: this.state.user,
-        content: e.target.value,
-        type: "incomingMessage",
-        color: this.state.currentUser.color
-      };
+    let value = e.target.value;
+    const imgTest = /\.(jpg|png|gif)\b/;
+    let newMessage = {
+      username: this.state.user,
+      content: value,
+      type: "incomingMessage",
+      color: this.state.currentUser.color
+    };
+
+    if(imgTest.test(value)) {
+      console.log('URL CONTAINS IMAGE');
+      newMessage.type = 'image';
+      this.socket.send(JSON.stringify(newMessage));
+      e.target.value = "";
+    }else if (e.key === "Enter" && value.trim()) {
+
       this.socket.send(JSON.stringify(newMessage));
       e.target.value = "";
     }
   };
 
   newUsername = e => {
+    let value = e.target.value;
     if (
-      e.key === "Enter" && e.target.value !== this.state.user && e.target.value.trim()
+      e.key === "Enter" && value !== this.state.user && value.trim()
     ) {
-      this.setState({ user: e.target.value });
+      this.setState({ user: value });
       const adminMessage = {
         username: "",
-        content: `${this.state.user} changed their name to ${e.target.value}`,
+        content: `${this.state.user} changed their name to ${value}`,
         type: "incoming-notification"
       };
       this.socket.send(JSON.stringify(adminMessage));
