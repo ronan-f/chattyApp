@@ -27,7 +27,6 @@ wss.on("connection", ws => {
   ws.send(
     JSON.stringify({
       color: "#" + ((Math.random() * 0xffffff) << 0).toString(16),
-      id: uuidv1(),
       type:'connection'
     })
   );

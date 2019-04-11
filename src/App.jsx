@@ -7,47 +7,45 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      type: "postMessage",
       messages: [],
       user: "Anonymous",
       numberOfUsers: 0,
-      currentUserId: null,
-      currentUser: {id: null, color: null}
+      currentUser: {color: null}
     };
   }
 
   componentDidMount() {
-    this.socket = new WebSocket("ws://0.0.0.0:3001");
+    this.socket = new WebSocket("ws://0.0.0.0:3001"); //establish new websocket connection
     this.socket.onopen = () => {
       console.log("Connected to sockets");
     };
     this.socket.onmessage = event => {
       const parsedMessageObj = JSON.parse(event.data);
-      if (parsedMessageObj.type === 'connection') {
-        this.setState({currentUser: {id: null, color: parsedMessageObj.color }});
-      } else {
+      if (parsedMessageObj.type === 'connection') { //If new user joins assign a color in state
+        this.setState({currentUser: {color: parsedMessageObj.color }});
+      } else { //for all other messages add to messages array in state
         this.setState({
           messages: this.state.messages.concat(parsedMessageObj),
-          numberOfUsers: parsedMessageObj.numberOfUsers
+          numberOfUsers: parsedMessageObj.numberOfUsers //update state with current num of users
         });
       }
     };
   }
 
   addMessage = e => {
-    let value = e.target.value;
-    const imgTest = /\.(jpg|png|gif)\b/;
+    let targetValue = e.target.value;
+    const imgTest = /\.(jpg|png|gif)\b/; //regex to check if url is an image
     let newMessage = {
       username: this.state.user,
-      content: value,
+      content: targetValue,
       type: "incomingMessage",
       color: this.state.currentUser.color
     };
 
-    if(imgTest.test(value) && e.key === 'Enter') {
-      const inputAsArray = value.split(' ');
-      let url = '';
-      const restOfMessageArray = [];
+    if(imgTest.test(targetValue) && e.key === 'Enter') { //check if incoming message contains an image
+      const inputAsArray = targetValue.split(' '); //split up each word into an array
+      let url = ''; //store image url
+      const restOfMessageArray = []; //store any part of the message that isnt an image url
       for(let word of inputAsArray) {
         if (imgTest.test(word)){
           url = word;
@@ -55,13 +53,14 @@ class App extends Component {
           restOfMessageArray.push(word);
         }
       }
-      const restOfMessageJoined = restOfMessageArray.join(' ');
+      const restOfMessageJoined = restOfMessageArray.join(' '); //convert rest of words array back to 1 string
       newMessage.content = restOfMessageJoined;
       newMessage.url = url;
       newMessage.type = 'image';
       this.socket.send(JSON.stringify(newMessage));
       e.target.value = "";
-    }else if (e.key === "Enter" && value.trim()) {
+
+    }else if (e.key === "Enter" && targetValue.trim()) {
 
       this.socket.send(JSON.stringify(newMessage));
       e.target.value = "";
