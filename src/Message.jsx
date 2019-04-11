@@ -7,7 +7,7 @@ class Message extends Component {
     if(this.props.type === 'image'){
       tagName =
       <div>
-        <span className='message-content'>{this.props.content} </span>
+        <div className='message-content'>{this.props.content} </div>
         <img className='incoming-image' src={this.props.imageUrl} />
       </div>
     } else if(this.props.type === 'incomingMessage'){
