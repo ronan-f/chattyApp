@@ -42,7 +42,9 @@ class App extends Component {
       color: this.state.currentUser.color
     };
 
-    if(imgTest.test(targetValue) && e.key === 'Enter') { //check if incoming message contains an image
+    const enterTest = e.key === 'Enter';
+
+    if(imgTest.test(targetValue) && enterTest) { //check if incoming message contains an image
       const inputAsArray = targetValue.split(' '); //split up each word into an array
       let url = ''; //store image url
       const restOfMessageArray = []; //store any part of the message that isnt an image url
@@ -58,22 +60,22 @@ class App extends Component {
       newMessage.url = url;
       newMessage.type = 'image';
       this.socket.send(JSON.stringify(newMessage));
-      e.target.value = "";
+      e.target.value = ""; //reset input field
 
-    }else if (e.key === "Enter" && targetValue.trim()) {
+    } else if (enterTest && targetValue.trim()) {
 
       this.socket.send(JSON.stringify(newMessage));
       e.target.value = "";
     }
   };
 
-  newUsername = e => {
+  newUsername = e => { //function to change username
     let value = e.target.value;
     if (
-      e.key === "Enter" && value !== this.state.user && value.trim()
+      e.key === "Enter" && value !== this.state.user && value.trim() //validation so username can't be empty or repeated
     ) {
       this.setState({ user: value });
-      const adminMessage = {
+      const adminMessage = { //Send notification for updated username
         username: "",
         content: `${this.state.user} changed their name to ${value}`,
         type: "incoming-notification"

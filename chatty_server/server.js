@@ -12,7 +12,9 @@ const server = express()
   );
 
 // Create the WebSockets server
-const wss = new WebSocket.Server({ server });
+const wss = new WebSocket.Server({
+  server
+});
 
 wss.broadcast = function broadcast(data) {
   wss.clients.forEach(function each(client) {
@@ -26,8 +28,8 @@ wss.on("connection", ws => {
   console.log("Client connected");
   ws.send(
     JSON.stringify({
-      color: "#" + ((Math.random() * 0xffffff) << 0).toString(16),
-      type:'connection'
+      color: "#" + ((Math.random() * 0xffffff) << 0).toString(16), //on connection assign a color
+      type: 'connection'
     })
   );
   wss.broadcast(
@@ -35,12 +37,12 @@ wss.on("connection", ws => {
       id: uuidv1(),
       content: "A new user has joined",
       type: "incoming-notification",
-      numberOfUsers: wss.clients.size
+      numberOfUsers: wss.clients.size //number of connected users
     })
   );
   ws.on("message", function incoming(message) {
     const parsedMessage = JSON.parse(message);
-    parsedMessage.id = uuidv1();
+    parsedMessage.id = uuidv1(); //add ID to messsages
     parsedMessage.numberOfUsers = wss.clients.size;
     wss.broadcast(JSON.stringify(parsedMessage));
   });
