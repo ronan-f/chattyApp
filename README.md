@@ -46,4 +46,7 @@ To start, clone or download this repo. Run npm install from terminal to install 
 * SASS-loader
 * Sockjs-client
 * Style-loader
+* UUID
+* ws (WebSockets)
+* Express
 
